@@ -36,7 +36,7 @@
     submitSelector:
       "[type=submit], [type=image], [type=button]:last, button:last", // Selector to find a likely submit button or submit image (in a form)
     target: "US",
-    prefer_ratio: 0.333333333,
+    prefer_ratio: 33,
     ajaxSettings: {},
     smartyTag: true,
   };
