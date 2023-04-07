@@ -1387,7 +1387,7 @@
         data: {
           "auth-id": config.key,
           "auth-token": config.token,
-          search: Y.input,
+          search: data.input,
           include_only_cities: config.include_only_cities,
           include_only_states: config.include_only_states,
           include_only_zip_codes: config.include_only_zip_codes,
