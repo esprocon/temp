@@ -1308,6 +1308,17 @@
         });
       }
     }
+	  
+	function buildAddress(suggestion) {
+		let whiteSpace = "";
+		if (suggestion.secondary) {
+			if (suggestion.entries > 1) {
+				suggestion.secondary += " (" + suggestion.entries + " entries)";
+			}
+			whiteSpace = " ";
+		}
+		return suggestion.street_line + whiteSpace + suggestion.secondary + " " + suggestion.city + ", " + suggestion.state + " " + suggestion.zipcode;
+	}
 
     this.requestAutocomplete = function (event, data) {
       if (data.input && data.addr.isDomestic() && autocompleteResponse)
@@ -1347,7 +1358,7 @@
             );
           } else {
             for (var j = 0; j < json.suggestions.length; j++) {
-              var suggAddr = json.suggestions[j].text.replace(/<|>/g, "");
+              var suggAddr = buildAddress(json.suggestions[j]);
               suggAddr = suggAddr.replace(
                 new RegExp(
                   "(" + data.input.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&") + ")",
