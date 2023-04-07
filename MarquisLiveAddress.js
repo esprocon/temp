@@ -1358,7 +1358,9 @@
             );
           } else {
             for (var j = 0; j < json.suggestions.length; j++) {
-              var suggAddr = buildAddress(json.suggestions[j]);
+              let suggestion = json.suggestions[j];
+		suggestion['text'] = buildAddress(json.suggestions[j]);
+              var suggAddr = suggestion.text;
               suggAddr = suggAddr.replace(
                 new RegExp(
                   "(" + data.input.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&") + ")",
