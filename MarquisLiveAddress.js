@@ -611,7 +611,7 @@
                             "(All done. Call Counts - Autocomplete: " +
                                 instance.callCounts.autocomplete +
                                 ", Streets: " +
-                                this.instance.streets +
+                                instance.callCounts.streets +
                                 ")",
                             event,
                             data
