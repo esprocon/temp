@@ -3412,6 +3412,8 @@
 
         this.hasMoreEntries = function () {
             let hasMoreEntries = false;
+			let input = $(fields.freeform);
+			console.log(input.data());
             let addressStr = this.toString();
             if (typeof addressStr !== "undefined") {
                 var patt = new RegExp(".*\\([\\w\\d]*\\sentries\\)", "ig");
