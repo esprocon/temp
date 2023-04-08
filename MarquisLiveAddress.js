@@ -1338,11 +1338,11 @@
 	function buildSecondarySearchParms(addressStr) {
 		let parms = {};
 		if(addressStr && typeof addressStr!=='undefined') {
-			let search = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim().replace(" ","+");
-			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim().replace(" ","+");
-			let addressEndMatter = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$3").trim();
-			parms['search'] = encodeURIComponent(search);
-			parms['selected'] = encodeURIComponent(search + "+(" + entries + ")+" + addressEndMatter);
+			let search = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim().replaceAll(" ","+");
+			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim();
+			let addressEndMatter = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$3").trim().replaceAll(" ","+");
+			parms['search'] = search;
+			parms['selected'] = search + "+(" + entries + ")+" + addressEndMatter;
 		}
 		return parms;		
 	}
