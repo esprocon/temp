@@ -201,63 +201,63 @@
             typeof config.include_only_cities === "undefined" ? "" : config.include_only_cities;
 
         /** (Service Input Field) Limit the results to only those states listed, as well as those listed in include_only_cities. 
-	Previously 'stateFilter' (5.2), 'cityStatePreference' (2.8). Examples: UT;ID;MT or CONTIGUOUS or ALLSTATES*/
+		Previously 'stateFilter' (5.2), 'cityStatePreference' (2.8). Examples: UT;ID;MT or CONTIGUOUS or ALLSTATES*/
         config.include_only_states =
             typeof config.include_only_states === "undefined" ? "" : config.include_only_states;
 
         /**(Service Input Field) Limit the results to only those ZIP Codes listed. 
-	When this parameter is used, no other _cities, _states parameters can be used.
-	Note: When using this parameter, the prefer_geolocation parameter must NOT be set to city.
-	Example: 90210;06504*/
+		When this parameter is used, no other _cities, _states parameters can be used.
+		Note: When using this parameter, the prefer_geolocation parameter must NOT be set to city.
+		Example: 90210;06504*/
         config.include_only_zip_codes =
             typeof config.include_only_zip_codes === "undefined" ? "" : config.include_only_zip_codes;
 
         /**(Service Input Field) Exclude the following states from the results. When this parameter is used, 
-	no other include_ parameters may be used. Note: The prefer_geolocation parameter MUST be set to none 
-	if the customer's current location is in a state specified in this parameter; otherwise the customer 
-	will see addresses from their current location.
-	Example: SD;ND;MT*/
+		no other include_ parameters may be used. Note: The prefer_geolocation parameter MUST be set to none 
+		if the customer's current location is in a state specified in this parameter; otherwise the customer 
+		will see addresses from their current location.
+		Example: SD;ND;MT*/
         config.exclude_states = typeof config.exclude_states === "undefined" ? "" : config.exclude_states;
 
         /**(Service Input Field) Display suggestions with the listed cities and states at the top of the 
-	suggestion list, as well as those listed in prefer_states. Previously 'cityStatePreference' (2.8).
-	Example: DENVER,AURORA,CO;OMAHA,NE*/
+		suggestion list, as well as those listed in prefer_states. Previously 'cityStatePreference' (2.8).
+		Example: DENVER,AURORA,CO;OMAHA,NE*/
         config.prefer_cities = typeof config.prefer_cities === "undefined" ? "" : config.prefer_cities;
 
         /**(Service Input Field) Display suggestions with the listed states at the top of the suggestion list, 
-	as well as those listed in prefer_cities. Previously 'cityStatePreference' (2.8).
-	Examples: UT;ID;MT*/
+		as well as those listed in prefer_cities. Previously 'cityStatePreference' (2.8).
+		Examples: UT;ID;MT*/
         config.prefer_states = typeof config.prefer_states === "undefined" ? "" : config.prefer_states;
 
         /**(Service Input Field) Display suggestions with the listed ZIP Codes at the top of the 
-	suggestion list. When this parameter is used, no other _cities or _states parameters can be used.
-	Note: When using this parameter, the prefer_geolocation parameter must NOT be set to city.*/
+		suggestion list. When this parameter is used, no other _cities or _states parameters can be used.
+		Note: When using this parameter, the prefer_geolocation parameter must NOT be set to city.*/
         config.prefer_zip_codes = typeof config.prefer_zip_codes === "undefined" ? "" : config.prefer_zip_codes;
 
         /**(Service Input Field) If omitted or set to city, it uses the sender's IP address (IPv4 only) 
-	to determine location, then automatically adds the city and state to the prefer_cities value. 
-	This parameter takes precedence over other _include or _exclude parameters meaning that if it 
-	is not set to none, you may see addresses from the customer's area when you may not desire it.
-	Acceptable values are: empty string (which defaults to city), none, or city.
-	Notes:
-	1. If any _zip_codes parameters are used, this parameter must NOT be set to city)
-	2. If the request to the Autocomplete Pro API goes through a proxy, you will need to set 
-	an X-Forwarded-For header specifying the user's IP address.
-	Previously 'geolocatePrecision' (5.2)*/
+		to determine location, then automatically adds the city and state to the prefer_cities value. 
+		This parameter takes precedence over other _include or _exclude parameters meaning that if it 
+		is not set to none, you may see addresses from the customer's area when you may not desire it.
+		Acceptable values are: empty string (which defaults to city), none, or city.
+		Notes:
+		1. If any _zip_codes parameters are used, this parameter must NOT be set to city)
+		2. If the request to the Autocomplete Pro API goes through a proxy, you will need to set 
+		an X-Forwarded-For header specifying the user's IP address.
+		Previously 'geolocatePrecision' (5.2)*/
         config.prefer_geolocation =
             typeof config.prefer_geolocation === "undefined" ? "city" : config.prefer_geolocation;
 
         /**(Service Input Field) Specifies the percentage of address suggestions that should be preferred 
-	and will appear at the top of the suggestion list. Expressed as an integer value, range [0, 100].
-	Previously 'preferRatio' (5.2) */
+		and will appear at the top of the suggestion list. Expressed as an integer value, range [0, 100].
+		Previously 'preferRatio' (5.2) */
         config.prefer_ratio = config.prefer_ratio || defaults.prefer_ratio;
 
         /**(Service Input Field) Include results from alternate data sources.
-	Allowed values are:
-	all - will include non-postal addresses in the results
-	postal - will limit the results to postal addresses only
-	If this parameter is used, an additional field named source will be returned for each result, 
-	which is either postal for postal addresses, or other if the address is from an alternate data source. */
+		Allowed values are:
+		all - will include non-postal addresses in the results
+		postal - will limit the results to postal addresses only
+		If this parameter is used, an additional field named source will be returned for each result, 
+		which is either postal for postal addresses, or other if the address is from an alternate data source. */
         config.source = config.source || defaults.source;
 
         if (typeof config.max_results === "number" && config.max_results < 1) {
@@ -265,8 +265,8 @@
         }
 
         /***(Plugin Config) The target API to submit the address to. To include the international API, 
-	set to "US|International". This is case insensitive, order insenstive, and whitespace insensitive. 
-	Possible inputs are "US", "US|international", and "International". Must be separated by a pipe. */
+		set to "US|International". This is case insensitive, order insenstive, and whitespace insensitive. 
+		Possible inputs are "US", "US|international", and "International". Must be separated by a pipe. */
         if (!config.target || typeof config.target != "string") {
             config.target = defaults.target;
         }
@@ -1356,10 +1356,13 @@
                         } else {
                             data.streetField = $(domfields["address1"]);
                         }
-                    }
+                    }					
                     data.suggContainer.css({
                         width: Math.max(data.streetField.outerWidth(false), 250) + "px",
                     });
+					if(data.isForSecondary) {
+						data.streetField.val(data.lastStreetInput);
+					}
 
                     data.containerUi.show();
 
@@ -1387,7 +1390,9 @@
             if (data.isForSecondary) {
                 let secondaryParms = buildSecondarySearchParms(data.input);
                 autoCompleteParms["search"] = secondaryParms.search;
+				data.lastStreetInput = secondaryParms.search;
                 autoCompleteParms["selected"] = secondaryParms.selected;
+
             } else {
                 autoCompleteParms["search"] = data.input;
             }
