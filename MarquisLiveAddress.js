@@ -1534,10 +1534,11 @@
       if (domfields.country && !domfields.country.options) {
         $(domfields.country).val("USA").change();
       }
-	  data.containerUi = containerUi;
+	  
       trigger("AutocompleteUsed", {
         address: addr,
-        suggestion: suggestion,
+        suggestion: suggestion,	      
+	containerUi: containerUi,
       });
     }
 
