@@ -355,7 +355,8 @@
 		  */
 		  if(data.address.hasMoreEntries()) {
 			trigger("AutocompleteInvoked", {
-              input: data.address,
+              		input: data.address.toString(),
+			  addr: data.address,
 			  isForSecondary: true
             });
 		  } else
