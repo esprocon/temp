@@ -1411,8 +1411,15 @@
               data.suggContainer.append(link);
             }
           }
-
-          data.suggContainer.css({
+		  if(typeof data.streetField==='undefined') {
+			let domfields = data.addr.getDomFields();
+			if(data.addr.isFreeform()) {
+				data.streetField = $(domfields['freeform']);
+			} else {
+				data.streetField = $(domfields['address1']);
+			}
+		  }
+          data.suggContainer.css({			
             width: Math.max(data.streetField.outerWidth(false), 250) + "px",
           });
 
