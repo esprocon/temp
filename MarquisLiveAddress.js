@@ -349,6 +349,16 @@
               event,
               data
             );
+		  /**
+		  	If the address has more entries, invoke autocomplete again, this time
+			passing the selected parameter.
+		  */
+		  if(data.address.hasMoreEntries()) {
+			trigger("AutocompleteInvoked", {
+              input: data.address,
+			  isForSecondary: true
+            });
+		  } else
 
           // If autoVerify is on, AND there's enough input in the address,
           // AND it hasn't been verified automatically before -OR- it's a freeform address,
@@ -1259,6 +1269,7 @@
     };
 
     function doAutocomplete(event) {
+	  if(config.debug) console.log("DEBUG: ui.doAutoComplete(event) ", event);
       var addr = event.data.addr;
       var streetField = event.data.streetField;
       var input = $.trim(event.data.streetField.val());
@@ -1323,7 +1334,20 @@
 		return suggestion.street_line + whiteSpace + suggestion.secondary + " " + suggestion.city + ", " + suggestion.state + " " + suggestion.zipcode;
 	}
 
+	function buildSecondarySearchParms(addressStr) {
+		let parms = {};
+		if(addressStr && typeof addressStr!=='undefined') {
+			let search = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim();
+			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim();
+			let addressEndMatter = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$3").trim();
+			parms['search'] = encodeURIComponent(search);
+			parms['selected'] = encodeURIComponent(search + " (" + entries + ") " + addressEndMatter);
+		}
+		return parms;		
+	}
+
     this.requestAutocomplete = function (event, data) {
+	  if(config.debug) console.log("DEBUG: ui.requestAutocomplete(event, data)", event, data);
       if (data.input && data.addr.isDomestic() && autocompleteResponse)
         data.containerUi.show();
 
@@ -1396,11 +1420,7 @@
 
       autocplRequests[autocplrequest.number] = autocplrequest;
 
-      var ajaxSettings = {
-        url: "https://us-autocomplete-pro.api.smarty.com/lookup",
-        traditional: true,
-        dataType: "json",
-        data: {
+	  let autoCompleteParms = {
           "auth-id": config.key,
           "auth-token": config.token,
           search: data.input,
@@ -1414,7 +1434,27 @@
           prefer_geolocation: config.prefer_geolocation,
           prefer_ratio: config.prefer_ratio,
           source: config.source,
-        },
+    	}
+
+	  if(data.isForSecondary) {
+		let secondaryParms = buildSecondarySearchParms(data.input);
+		autoCompleteParms['search'] = secondaryParms.search;
+		autoCompleteParms['selected'] = secondaryParms.selected;
+	  }
+
+	  if(config.token) {
+		autoCompleteParms['auth-id'] = config.key;		
+		autoCompleteParms['auth-token'] = config.token;
+	  } else {
+		autoCompleteParms['key'] = config.key;		
+	  }
+	  
+
+      var ajaxSettings = {
+        url: "https://us-autocomplete-pro.api.smarty.com/lookup",
+        traditional: true,
+        dataType: "json",
+        data: autoCompleteParms,
       };
 
       $.ajax($.extend({}, config.ajaxSettings, ajaxSettings)).done(function (
@@ -1439,6 +1479,7 @@
     };
 
     function useAutocompleteSuggestion(addr, suggestion, containerUi) {
+	  if(config.debug) console.log("DEBUG: useAutocompleteSuggestion | suggestion: ", suggestion);
       addr.usedAutocomplete = false;
       var domfields = addr.getDomFields();
       ui.hideAutocomplete(addr.id()); // It's important that the suggestions are hidden before AddressChanged event fires
@@ -2891,7 +2932,7 @@
     // PUBLIC MEMBERS //
 
     this.form = formObj; // Reference to the parent form object (NOT THE DOM ELEMENT)
-    this.match = match; // Determines how matches are made and what kind of results are returned.
+    this.match = typeof match === 'undefined' || match.length==0 ? config.match : match; // Determines how matches are made and what kind of results are returned.
     this.verifyCount = 0; // Number of times this address was submitted for verification
     this.lastField; // The last field found (last to appear in the DOM) during mapping, or the order given
     this.active = true; // If true, verify the address. If false, pass-thru entirely.
@@ -3869,6 +3910,16 @@
     this.isFreeform = function () {
       return fields.freeform;
     };
+
+	this.hasMoreEntries = function() {
+		let hasMoreEntries = false;
+		let addressStr = this.toString();
+		if(typeof addressStr !== 'undefined') {
+			var patt = new RegExp(".*\\([\\w\\d]*\\sentries\\)","ig");
+			return patt.test(addressStr);
+		}
+		return hasMoreEntries;
+	}
 
     this.get = function (key) {
       return fields[key] ? fields[key].value : null;
