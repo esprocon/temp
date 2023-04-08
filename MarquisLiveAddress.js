@@ -1338,11 +1338,11 @@
 	function buildSecondarySearchParms(addressStr) {
 		let parms = {};
 		if(addressStr && typeof addressStr!=='undefined') {
-			let search = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim();
-			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim();
+			let search = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim().replace(" ","+");
+			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim().replace(" ","+");
 			let addressEndMatter = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$3").trim();
 			parms['search'] = encodeURIComponent(search);
-			parms['selected'] = encodeURIComponent(search + " (" + entries + ") " + addressEndMatter);
+			parms['selected'] = encodeURIComponent(search + "+(" + entries + ")+" + addressEndMatter);
 		}
 		return parms;		
 	}
@@ -1533,12 +1533,11 @@
       }
       if (domfields.country && !domfields.country.options) {
         $(domfields.country).val("USA").change();
-      }
-	  
+      }	  
       trigger("AutocompleteUsed", {
         address: addr,
-        suggestion: suggestion,	      
-	containerUi: containerUi,
+        suggestion: suggestion,
+		containerUi: containerUi,
       });
     }
 
