@@ -2682,6 +2682,7 @@
         // on a freeform address), otherwise an infinite loop of requests is executed
         // because the address keeps changing! (Set "suppressAutoVerify" to true when coming from the "Undo" link)
         var doSet = function (key, value, updateDomElement, keepState, sourceEvent, suppressAutoVerify) {
+			if(config.debug) console.log("DEBUG: ADDRESS.doSet(key, value, updateDomElement, keepState, sourceEvent, suppressAutoVerify", key, value, updateDomElement, keepState, sourceEvent, suppressAutoVerify);
             if (!arrayContains(acceptableFields, key) || !domMap[key]) {
                 // Skip "id" and other unacceptable fields, also skip fields that weren't included in mapping
                 return false;
