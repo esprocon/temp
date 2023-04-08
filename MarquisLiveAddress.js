@@ -3944,11 +3944,12 @@
 
 	this.hasMoreEntries = function() {
 		let hasMoreEntries = false;
-		let addressStr = this.toString();
+		let addressStr = this.toString();		
 		if(typeof addressStr !== 'undefined') {
 			var patt = new RegExp(".*\\([\\w\\d]*\\sentries\\)","ig");
-			return patt.test(addressStr);
-		}
+			hasMoreEntries = patt.test(addressStr);
+		}		
+		if(config.debug) console.log("Address Suggests More Entries: " + addressStr + " | " + hasMoreEntries);
 		return hasMoreEntries;
 	}
 
