@@ -355,7 +355,7 @@
 		  */
 		  if(data.address.hasMoreEntries()) {
 			trigger("AutocompleteInvoked", {
-              		input: data.address.toString(),
+              input: data.address.toString(),
 			  addr: data.address,
 			  isForSecondary: true
             });
@@ -1349,14 +1349,19 @@
 
     this.requestAutocomplete = function (event, data) {
 	  if(config.debug) console.log("DEBUG: ui.requestAutocomplete(event, data)", event, data);
-      if (data.input && data.addr.isDomestic() && autocompleteResponse)
-        data.containerUi.show();
+      if (data.input && data.addr.isDomestic() && autocompleteResponse) {
+		if(typeof data.containerUi === 'undefined') {
+			data.containerUi = $(".smarty-autocomplete.smarty-addr-" + data.addr.id()).closest(".smarty-ui");
+			data.containerUi.show();
+		}
+	  }        
 
       var autocplrequest = {
         callback: function (counter, json) {
           var patt = new RegExp("^\\w+\\s\\w+|^[A-Za-z]+$|^[A-Za-z]+\\s\\w*");
           var filtering = patt.test(data.input);
           autocompleteResponse = json;
+		  if(typeof data.suggContainer === 'undefined') data.suggContainer = $(".smarty-autocomplete", data.containerUi);
           data.suggContainer.empty();
 
           if (!json.suggestions || json.suggestions.length == 0) {
@@ -1529,6 +1534,7 @@
       if (domfields.country && !domfields.country.options) {
         $(domfields.country).val("USA").change();
       }
+	  data.containerUi = containerUi;
       trigger("AutocompleteUsed", {
         address: addr,
         suggestion: suggestion,
