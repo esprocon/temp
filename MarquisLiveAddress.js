@@ -1342,7 +1342,7 @@
 			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim();
 			let addressEndMatter = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$3").trim();
 			parms['search'] = search;
-			parms['selected'] = search + "+(" + entries + ")+" + addressEndMatter;
+			parms['selected'] = search + " (" + entries + ") " + addressEndMatter;
 		}
 		return parms;		
 	}
