@@ -1427,9 +1427,6 @@
       autocplRequests[autocplrequest.number] = autocplrequest;
 
 	  let autoCompleteParms = {
-          "auth-id": config.key,
-          "auth-token": config.token,
-          search: data.input,
           include_only_cities: config.include_only_cities,
           include_only_states: config.include_only_states,
           include_only_zip_codes: config.include_only_zip_codes,
@@ -1446,6 +1443,8 @@
 		let secondaryParms = buildSecondarySearchParms(data.input);
 		autoCompleteParms['search'] = secondaryParms.search;
 		autoCompleteParms['selected'] = secondaryParms.selected;
+	  } else {
+		autoCompleteParms['search']=data.input;
 	  }
 
 	  if(config.token) {
