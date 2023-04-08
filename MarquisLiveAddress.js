@@ -18,9 +18,9 @@
   var defaults = {
     candidates: 3, // Number of suggestions to show if ambiguous
     max_results: 10, // Number of autocomplete suggestions; set to 0 or false to disable
-    requestUrlInternational:
+    requestStreetIntl:
       "https://international-street.api.smartystreets.com/verify", // International API endpoint
-    requestUrlUS: "https://api.smartystreets.com/street-address", // US API endpoint
+    requestStreetUS: "https://api.smartystreets.com/street-address", // US API endpoint
     timeout: 5000, // How long to wait before the request times out (5000 = 5 seconds)
     speed: "medium", // Animation speed
     ambiguousMessage: "Matched multiple addresses.<br>which did you mean?", // Message when address is ambiguous
@@ -39,6 +39,9 @@
     prefer_ratio: 33,
     ajaxSettings: {},
     smartyTag: true,
+	match: 'enhanced',
+	street_license: 'us-rooftop-geocoding-cloud',
+	source: 'postal'
   };
   var config = {}; // Configuration settings as set by the user or just the defaults
   var forms = []; // List of forms (which hold lists of addresses)
@@ -162,13 +165,13 @@
 
     /**(Plugin Config) The URL to which international API requests are made. You can change 
 	this to proxy requests through your own server, thus allowing you to hide your API key, 
-	monitor requests, and more, but it must act and look exactly like our actual endpoint.*/
-    config.requestUrlInternational = config.requestUrlInternational || defaults.requestUrlInternational;
+	monitor requests, and more, but it must act and look exactly like our actual endpoint. Previously 'requestUrlInternational' (5.2)*/
+    config.requestStreetIntl = config.requestStreetIntl || defaults.requestStreetIntl;
 
     /**(Plugin Config) The URL to which US API requests are made. You can change this to proxy requests 
 	through your own server, thus allowing you to hide your API key, monitor requests, and more, 
-	but it must act and look exactly like our actual endpoint.*/
-    config.requestUrlUS = config.requestUrlUS || defaults.requestUrlUS;
+	but it must act and look exactly like our actual endpoint. Previously 'requestUrlUS' (5.2)*/
+    config.requestStreetUS = config.requestStreetUS || defaults.requestStreetUS;
 
     /**(Plugin Config) Hides autocomplete suggestions until street information is entered. 
 	This is useful when using filters because filters only work once a street is entered. 
@@ -256,7 +259,7 @@
 	postal - will limit the results to postal addresses only
 	If this parameter is used, an additional field named source will be returned for each result, 
 	which is either postal for postal addresses, or other if the address is from an alternate data source. */
-    config.prefer_ratio = config.prefer_ratio || defaults.prefer_ratio;
+    config.source = config.source || defaults.source;
 
     if (typeof config.max_results === "number" && config.max_results < 1) {
       config.max_results = false;
@@ -1308,7 +1311,7 @@
         });
       }
     }
-	  
+
 	function buildAddress(suggestion) {
 		let whiteSpace = "";
 		if (suggestion.secondary) {
@@ -1358,8 +1361,8 @@
             );
           } else {
             for (var j = 0; j < json.suggestions.length; j++) {
-              let suggestion = json.suggestions[j];
-		suggestion['text'] = buildAddress(json.suggestions[j]);
+			  let suggestion = json.suggestions[j];
+			  suggestion['text'] = buildAddress(json.suggestions[j]);
               var suggAddr = suggestion.text;
               suggAddr = suggAddr.replace(
                 new RegExp(
@@ -1410,6 +1413,7 @@
           max_results: config.max_results,
           prefer_geolocation: config.prefer_geolocation,
           prefer_ratio: config.prefer_ratio,
+          source: config.source,
         },
       };
 
@@ -1865,6 +1869,7 @@
     };
 
     this.disableFields = function (address) {
+	  if (config.debug) console.log("DEBUG: disableFields");
       // Given an address, disables the input fields for the address, also the submit button
       if (!config.ui) return;
 
@@ -1886,7 +1891,8 @@
       }
     };
 
-    this.enableFields = function (address) {
+    this.enableFields = function (address) {		
+	  if (config.debug) console.log("DEBUG: enableFields");
       // Given an address, re-enables the input fields for the address
       if (!config.ui) return;
 
@@ -1908,7 +1914,8 @@
       }
     };
 
-    this.showLoader = function (addr) {
+    this.showLoader = function (addr) {	  
+	  if (config.debug) console.log("DEBUG: showLoader");
       if (!config.ui || !addr.hasDomFields()) return;
 
       // Get position information now instead of earlier in case elements shifted since page load
@@ -1927,11 +1934,13 @@
       $(".smarty-dots", loaderUI).show();
     };
 
-    this.hideLoader = function (addr) {
+    this.hideLoader = function (addr) {	  
+	  if (config.debug) console.log("DEBUG: hideLoader");
       if (config.ui) $(".smarty-dots.smarty-addr-" + addr.id()).hide();
     };
 
-    this.markAsValid = function (addr) {
+    this.markAsValid = function (addr) {	  
+	  if (config.debug) console.log("DEBUG: markAsValid");
       if (!config.ui || !addr || !config.smartyTag) return;
 
       var domTag = $(".smarty-tag.smarty-tag-grayed.smarty-addr-" + addr.id());
@@ -1952,7 +1961,8 @@
         .addClass("smarty-undo");
     };
 
-    this.unmarkAsValid = function (addr) {
+    this.unmarkAsValid = function (addr) {	  
+	  if (config.debug) console.log("DEBUG: unmarkAsValid");
       var validSelector = ".smarty-tag.smarty-addr-" + addr.id();
       if (
         !config.ui ||
@@ -1973,7 +1983,8 @@
         .removeClass("smarty-undo");
     };
 
-    this.showAmbiguous = function (data) {
+    this.showAmbiguous = function (data) {	  	  
+	  if (config.debug) console.log("DEBUG: showAmbiguous");
       if (!config.ui || !data.address.hasDomFields()) return;
 
       var addr = data.address;
@@ -2151,7 +2162,8 @@
       });
     };
 
-    this.showInvalid = function (data) {
+    this.showInvalid = function (data) {  	  
+	  if (config.debug) console.log("DEBUG: showInvalid");
       if (!config.ui || !data.address.hasDomFields()) return;
 
       var addr = data.address;
@@ -2240,7 +2252,8 @@
       });
     };
 
-    this.showInvalidCountry = function (data) {
+    this.showInvalidCountry = function (data) {  	  
+	  if (config.debug) console.log("DEBUG: showInvalidCountry");
       if (!config.ui || !data.address.hasDomFields()) return;
 
       var addr = data.address;
@@ -2328,7 +2341,8 @@
       });
     };
 
-    this.showMissingSecondary = function (data) {
+    this.showMissingSecondary = function (data) {  	  
+	  if (config.debug) console.log("DEBUG: showMissingSecondary");
       if (!config.ui || !data.address.hasDomFields()) return;
       var addr = data.address;
       var corners = addr.corners();
@@ -2446,7 +2460,8 @@
       });
     };
 
-    this.showMissingInput = function (data) {
+    this.showMissingInput = function (data) {  	  
+	  if (config.debug) console.log("DEBUG: showMissingInput");
       if (!config.ui || !data.address.hasDomFields()) return;
 
       var addr = data.address;
@@ -3025,7 +3040,8 @@
       }
     };
 
-    this.replaceWith = function (resp, updateDomElement, e) {
+    this.replaceWith = function (resp, updateDomElement, e) {  	  
+	  if (config.debug) console.log("DEBUG: replaceWith | resp {}", resp);
       // Given the response from an API request associated with this address,
       // replace the values in the address... and if updateDomElement is true,
       // then change the values in the fields on the page accordingly.
@@ -3578,7 +3594,8 @@
       return corners;
     };
 
-    this.verify = function (invoke, invokeFn) {
+    this.verify = function (invoke, invokeFn) {  	  
+	  if (config.debug) console.log("DEBUG: verify");
       // Invoke contains the element to "click" on once we're all done, or is a user-defined callback function (may also be undefined)
       if (!self.enoughInput()) {
         return trigger("AddressWasMissingInput", {
@@ -3597,29 +3614,23 @@
           encodeURIComponent(config.key) +
           "&auth-token=" +
           encodeURIComponent(config.token)
-        : "auth-id=" + encodeURIComponent(config.key);
-      var requestUrl = config.requestUrlInternational;
+        : "key=" + encodeURIComponent(config.key);
+      var requestUrl = config.requestStreetIntl;
       var headers = {};
       if (self.isDomestic() && config.target.indexOf("US") >= 0) {
-        requestUrl = config.requestUrlUS;
+        requestUrl = config.requestStreetUS;
         addrData = self.toRequestUS();
-      }
-
-      var agent =
-        "&agent=" +
-        encodeURIComponent(
-          "smartystreets (plugin:website@" + instance.version + ")"
-        );
-      if (config.agent) agent += "&agent=" + encodeURIComponent(config.agent);
+      }      
 
       var ajaxSettings = {
-        url: requestUrl + "?" + credentials + agent,
+        url: requestUrl + "?" + credentials,
         contentType: "jsonp",
         data: addrData,
         timeout: config.timeout,
       };
-
-      $.ajax($.extend({}, config.ajaxSettings, ajaxSettings))
+	  let verifyAjaxSettings = $.extend({}, config.ajaxSettings, ajaxSettings);	  
+	  if (config.debug) console.log("DEBUG: verify | ajaxSettings : {}", verifyAjaxSettings);
+      $.ajax(verifyAjaxSettings)
         .done(function (response, statusText, xhr) {
           trigger("ResponseReceived", {
             address: self,
@@ -3658,7 +3669,8 @@
       });
     };
 
-    this.enoughInput = function () {
+    this.enoughInput = function () {	  
+	  if (config.debug) console.log("DEBUG: enoughInput");
       // Checks for state dropdown
       var stateText;
       if (fields.administrative_area) {
@@ -3731,7 +3743,7 @@
           $.extend(obj, keyval);
         }
       }
-      obj.geocode = config.geocode;
+      obj.prefer_geolocation = config.prefer_geolocation;
       return obj;
     };
 
@@ -3805,11 +3817,13 @@
       }
 
       obj.match = this.match;
-      obj.candidates = config.candidates;
+      obj.candidates = config.candidates;	  
+	  if (config.debug) console.log("DEBUG: toRequestUS | obj: {}", obj);
       return obj;
     };
 
-    function getStringOfPossibleDropdown(field) {
+    function getStringOfPossibleDropdown(field) {  
+	  if (config.debug) console.log("DEBUG: getStringOfPossibleDropdown");
       if (field.dom) {
         if (field.dom.tagName !== "SELECT") {
           return field.dom.value + " ";
@@ -3878,6 +3892,7 @@
     };
 
     this.accept = function (data, showValid) {
+	  if (config.debug) console.log("DEBUG: accept");
       showValid = typeof showValid === "undefined" ? true : showValid;
       state = "accepted";
       ui.enableFields(self);
@@ -3888,6 +3903,7 @@
     };
 
     this.unaccept = function () {
+	  if (config.debug) console.log("DEBUG: unaccept");
       state = "changed";
       ui.unmarkAsValid(self);
       return self;
@@ -4055,9 +4071,7 @@
     this.isValid = function () {
       return (
         this.length === 1 &&
-        (this.raw[0].analysis.verification_status === "Verified" ||
-          this.raw[0].analysis.verification_status === "Partial" ||
-          (typeof this.raw[0].analysis.dpv_match_code !== "undefined" &&
+        ((typeof this.raw[0].analysis.dpv_match_code !== "undefined" &&
             this.raw[0].analysis.dpv_match_code !== "N"))
       );
     };
@@ -4066,14 +4080,14 @@
       return (
         this.length === 0 ||
         (this.length === 1 &&
-          (this.raw[0].analysis.verification_status === "None" ||
-            this.raw[0].analysis.address_precision === "None" ||
-            this.raw[0].analysis.address_precision === "AdministrativeArea" ||
-            this.raw[0].analysis.address_precision === "Locality" ||
-            this.raw[0].analysis.address_precision === "Thoroughfare" ||
+          (this.raw[0].metadata.precision === "Unknown" ||
+            this.raw[0].metadata.precision === "None" ||
+            this.raw[0].metadata.precision === "Zip5" ||
+            this.raw[0].metadata.precision === "Zip6" ||
+            this.raw[0].metadata.precision === "Zip7" ||
+            this.raw[0].metadata.precision === "Zip8" ||
             this.raw[0].analysis.dpv_match_code === "N" ||
-            (typeof this.raw[0].analysis.verification_status === "undefined" &&
-              typeof this.raw[0].analysis.dpv_match_code === "undefined")))
+            typeof this.raw[0].analysis.dpv_match_code === "undefined"))
       );
     };
 
