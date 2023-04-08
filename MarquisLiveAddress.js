@@ -1699,7 +1699,7 @@
         Object.keys(address).map(function (key) {
           var elem = $(address[key]);
           if (elem.length > 0) {
-            elem.attr("autocomplete", "smartystreets");
+            elem.attr("autocomplete", "new-password");
           }
         });
       }
