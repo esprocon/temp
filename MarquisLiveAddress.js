@@ -1310,6 +1310,7 @@
 
             var autocplrequest = {
                 callback: function (counter, json) {
+					if(config.debug) console.log("DEBUG: autocplrequest callback(counter, json)", counter, json);
                     var patt = new RegExp("^\\w+\\s\\w+|^[A-Za-z]+$|^[A-Za-z]+\\s\\w*");
                     var filtering = patt.test(data.input);
                     autocompleteResponse = json;
@@ -1361,6 +1362,7 @@
                         width: Math.max(data.streetField.outerWidth(false), 250) + "px",
                     });
 					if(data.isForSecondary) {
+						data.streetField.attr('data-suggest-text',data.suggestText);
 						data.streetField.val(data.lastStreetInput);
 					}
 
@@ -1390,6 +1392,7 @@
             if (data.isForSecondary) {
                 let secondaryParms = buildSecondarySearchParms(data.input);
                 autoCompleteParms["search"] = secondaryParms.search;
+				data.suggestText = data.input;
 				data.lastStreetInput = secondaryParms.search;
                 autoCompleteParms["selected"] = secondaryParms.selected;
 
@@ -1829,7 +1832,7 @@
         };
 
         this.disableFields = function (address) {
-            if (config.debug) console.log("DEBUG: disableFields");
+            if (config.debug) console.log("DEBUG: disableFields(address)", address);
             // Given an address, disables the input fields for the address, also the submit button
             if (!config.ui) return;
 
@@ -1850,7 +1853,7 @@
         };
 
         this.enableFields = function (address) {
-            if (config.debug) console.log("DEBUG: enableFields");
+            if (config.debug) console.log("DEBUG: enableFields(address)", address);
             // Given an address, re-enables the input fields for the address
             if (!config.ui) return;
 
@@ -1871,7 +1874,7 @@
         };
 
         this.showLoader = function (addr) {
-            if (config.debug) console.log("DEBUG: showLoader");
+            if (config.debug) console.log("DEBUG: showLoader(addr)", addr);
             if (!config.ui || !addr.hasDomFields()) return;
 
             // Get position information now instead of earlier in case elements shifted since page load
@@ -1885,12 +1888,12 @@
         };
 
         this.hideLoader = function (addr) {
-            if (config.debug) console.log("DEBUG: hideLoader");
+            if (config.debug) console.log("DEBUG: hideLoader(addr)", addr);
             if (config.ui) $(".smarty-dots.smarty-addr-" + addr.id()).hide();
         };
 
         this.markAsValid = function (addr) {
-            if (config.debug) console.log("DEBUG: markAsValid");
+            if (config.debug) console.log("DEBUG: markAsValid(data)", data);
             if (!config.ui || !addr || !config.smartyTag) return;
 
             var domTag = $(".smarty-tag.smarty-tag-grayed.smarty-addr-" + addr.id());
@@ -1912,7 +1915,7 @@
         };
 
         this.unmarkAsValid = function (addr) {
-            if (config.debug) console.log("DEBUG: unmarkAsValid");
+            if (config.debug) console.log("DEBUG: unmarkAsValid(addr)", addr);
             var validSelector = ".smarty-tag.smarty-addr-" + addr.id();
             if (!config.ui || !addr || !config.smartyTag || $(validSelector).length == 0) return;
 
@@ -1925,7 +1928,7 @@
         };
 
         this.showAmbiguous = function (data) {
-            if (config.debug) console.log("DEBUG: showAmbiguous");
+            if (config.debug) console.log("DEBUG: showAmbiguous(data)", data);
             if (!config.ui || !data.address.hasDomFields()) return;
 
             var addr = data.address;
