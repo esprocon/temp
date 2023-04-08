@@ -1443,12 +1443,6 @@
             ui.hideAutocomplete(addr.id()); // It's important that the suggestions are hidden before AddressChanged event fires
 
             if (addr.isFreeform()) {
-                let inputText = "";
-                /* if (addr.hasMoreEntries()) {
-                    inputText = getSearchValFromEntriesSuggestion(suggestion.text);
-                } else {
-                    inputText = suggestion.text;
-                } */
                 $(domfields.freeform).val(suggestion.text).change();
                 addr.usedAutocomplete = true;
             } else {
@@ -1893,7 +1887,7 @@
         };
 
         this.markAsValid = function (addr) {
-            if (config.debug) console.log("DEBUG: markAsValid(data)", data);
+            if (config.debug) console.log("DEBUG: markAsValid(data)", addr);
             if (!config.ui || !addr || !config.smartyTag) return;
 
             var domTag = $(".smarty-tag.smarty-tag-grayed.smarty-addr-" + addr.id());
@@ -3413,13 +3407,12 @@
         this.hasMoreEntries = function () {
             let hasMoreEntries = false;
 			let input = $(fields.freeform);
-			console.log(input.data());
             let addressStr = this.toString();
             if (typeof addressStr !== "undefined") {
                 var patt = new RegExp(".*\\([\\w\\d]*\\sentries\\)", "ig");
                 hasMoreEntries = patt.test(addressStr);
             }
-            if (config.debug) console.log("Address Suggests More Entries: " + addressStr + " | " + hasMoreEntries);
+            if (config.debug) console.log("Address Suggests More Entries: " + addressStr + " | " + hasMoreEntries, this);
             return hasMoreEntries;
         };
 
