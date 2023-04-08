@@ -1444,12 +1444,12 @@
 
             if (addr.isFreeform()) {
                 let inputText = "";
-                if (addr.hasMoreEntries()) {
+                /* if (addr.hasMoreEntries()) {
                     inputText = getSearchValFromEntriesSuggestion(suggestion.text);
                 } else {
                     inputText = suggestion.text;
-                }
-                $(domfields.freeform).val(inputText).change();
+                } */
+                $(domfields.freeform).val(suggestion.text).change();
                 addr.usedAutocomplete = true;
             } else {
                 if (domfields.postal_code) {
