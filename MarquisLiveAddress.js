@@ -1335,10 +1335,18 @@
 		return suggestion.street_line + whiteSpace + suggestion.secondary + " " + suggestion.city + ", " + suggestion.state + " " + suggestion.zipcode;
 	}
 
+	function getSearchValFromEntriesSuggestion(suggestionText) {
+		let searchVal = "";
+		if(suggestionText && typeof suggestionText!=='undefined') {
+			searchVal = suggestionText.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim();
+		}
+		return searchVal;
+	}
+
 	function buildSecondarySearchParms(addressStr) {
 		let parms = {};
 		if(addressStr && typeof addressStr!=='undefined') {
-			let search = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$1").trim();
+			let search = getSearchValFromEntriesSuggestion(addressStr);
 			let entries = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$2").trim();
 			let addressEndMatter = addressStr.replace(/(.*)\(([\w\d]*)\sentries\)\s(.*)/ig,"$3").trim();
 			parms['search'] = search;
@@ -1402,7 +1410,7 @@
                 "<b>$1</b>"
               );
               var link = $(
-                '<a href="javascript:" class="smarty-suggestion">' +
+                '<a href="javascript:void(0)" class="smarty-suggestion">' +
                   suggAddr +
                   "</a>"
               );
@@ -1491,13 +1499,19 @@
     };
 
     function useAutocompleteSuggestion(addr, suggestion, containerUi) {
-	  if(config.debug) console.log("DEBUG: useAutocompleteSuggestion | suggestion: ", suggestion);
+	  if(config.debug) console.log("DEBUG: useAutocompleteSuggestion(addr, suggestion, containerUi)", addr, suggestion, containerUi);
       addr.usedAutocomplete = false;
       var domfields = addr.getDomFields();
       ui.hideAutocomplete(addr.id()); // It's important that the suggestions are hidden before AddressChanged event fires
 
       if (addr.isFreeform()) {
-        $(domfields.freeform).val(suggestion.text).change();
+		let inputText = "";
+		if(addr.hasMoreEntries()) {
+			inputText = getSearchValFromEntriesSuggestion(suggestion.text);
+		} else {
+			inputText = suggestion.text;
+		}
+        $(domfields.freeform).val(inputText).change();
         addr.usedAutocomplete = true;
       } else {
         if (domfields.postal_code) {
