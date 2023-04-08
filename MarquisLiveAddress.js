@@ -277,6 +277,10 @@
      *	EXPOSED (PUBLIC) FUNCTIONS
      */
     instance = {
+	  callCounts: {
+		autocomplete: 0,
+		streets: 0
+	  },
       events: {
         FieldsMapped: function (event, data) {
           if (config.debug)
@@ -306,10 +310,10 @@
         },
 
         AutocompleteInvoked: function (event, data) {
+		  this.callCounts.autocomplete = this.callCounts.autocomplete + 1;
           if (config.debug)
             console.log(
-              "EVENT:",
-              "AutocompleteInvoked",
+              "EVENT: AutocompleteInvoked (Total Calls: " + this.callCounts.autocomplete + ")",
               "(A request is about to be sent to the autocomplete service)",
               event,
               data
@@ -389,10 +393,10 @@
         },
 
         VerificationInvoked: function (event, data) {
+		  this.callCounts.streets = this.callCounts.streets + 1;
           if (config.debug)
             console.log(
-              "EVENT:",
-              "VerificationInvoked",
+              "EVENT: VerificationInvoked (Total Calls: " + this.callCounts.streets + ")",
               "(Address verification invoked)",
               event,
               data
@@ -638,7 +642,7 @@
 
         Completed: function (event, data) {
           if (config.debug)
-            console.log("EVENT:", "Completed", "(All done)", event, data);
+            console.log("EVENT:", "Completed", "(All done. Call Counts - Autocomplete: " + this.callCounts.autocomplete + ", Streets: " + this.callCounts.streets + ")", event, data);
 
           if (data.address) {
             ui.enableFields(data.address);
